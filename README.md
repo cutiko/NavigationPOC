@@ -16,7 +16,11 @@ The key is to understand what the resource id means in `popUpTo`. The [official 
 
 > The attribute value is the ID of the most recent destination that should remain on the stack.
 
-This means that `popUpTo` is equivalent of `removeEverythingUpToTheFollowingId`. So for example a navigation that is like this:
+### Skipping prior screens (more than one)
+
+This can mean that `popUpTo` is equivalent of `removeEverythingAfterTheFollowingId`.
+
+So, for example a navigation that is like this:
 
 ```
   <fragment
@@ -49,3 +53,23 @@ In the same case if we change `app:popUpToInclusive="false"` the original `First
 FirstFragment (original not removed due to popUpToInclusive false) -> FirstFragment (navigate from the third using action_ThirdFragment_to_FirstFragment)
 ```
 
+### Remove itself out
+
+Here the second fragment pops itself out; this is more in-line with the textual description in the documentation.
+
+```
+  <fragment
+        android:id="@+id/SecondFragment">
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/thirdFragment"
+            app:popUpTo="@id/secondFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+```
+
+Navigating from second to third is going to make the back navigation skips the second because it pops itself out. In documentation terms, the latest id in the stack was second but it remove itself by using inclusive.
+
+```
+FirstFragment -> SecondFragment -action_ThirdFragment_to_FirstFragment-> ThirdFragmet -back-> FirstFragment
+```
